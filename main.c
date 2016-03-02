@@ -17,7 +17,7 @@ void strip_newline(char *out) {
 
 void strip_whitespace(char *out) {
   char *scan = out;
-  while (*scan == ' ' && *scan != '\0') {
+  while (*scan == ' ' && *scan != '\0' && *scan != '\n') {
     scan++;
   }
   char *first = scan;
@@ -33,11 +33,20 @@ void strip_whitespace(char *out) {
   out[count] = '\0';
 }
 
+bool get_command(char *out) {
+  if (!get_line(out)) {
+    return false;
+  }
+  strip_newline(out);
+  strip_whitespace(out);
+  return true;
+}
+
 int main(int argc, char **argv) {
+  char line_buffer[513];  /* 512 characters and '\0' */
   while (true) {
-    char line_buffer[513];  // 512 characters and '\0'
-    if (get_line(line_buffer)) {
-      if (line_buffer[0] == 'q' && line_buffer[1] == '\n') {
+    if (get_command(line_buffer)) {
+      if (line_buffer[0] == 'q' && line_buffer[1] == '\0') {
         break;
       }
     }
