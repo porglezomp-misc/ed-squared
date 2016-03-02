@@ -15,7 +15,7 @@ void strip_newline(char *out) {
   } while (*out++);
 }
 
-void strip_whitespace(char *out) {
+void strip(char *out) {
   char *scan = out;
   while (*scan == ' ' && *scan != '\0' && *scan != '\n') {
     scan++;
@@ -33,12 +33,35 @@ void strip_whitespace(char *out) {
   out[count] = '\0';
 }
 
+void lstrip(char *out) {
+  char *scan = out;
+  while (*scan == ' ') {
+    scan++;
+  }
+  int distance = scan - out;
+  int count = 513 - distance;
+  memmove(out, scan, count);
+}
+
+void rstrip(char *out) {
+  char *scan = out;
+  char *last = out;
+  while (*scan != '\0') {
+
+    if (*scan != ' ' && *scan != '\n') {
+      last = scan;
+    }
+    scan++;
+  }
+  *(last+1) = '\0';
+}
+
 bool get_command(char *out) {
   if (!get_line(out)) {
     return false;
   }
   strip_newline(out);
-  strip_whitespace(out);
+  lstrip(out);
   return true;
 }
 
