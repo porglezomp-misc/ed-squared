@@ -2,6 +2,24 @@
 #include <stdbool.h>
 #include <string.h>
 
+typedef struct {
+  struct line *prev, *next;
+  char text[513];
+} line;
+
+typedef struct {
+  line *first_line, *last_line, *current_line;
+  int line_number, line_count;
+} document;
+
+document *alloc_document() {
+  return calloc(sizeof document, 1);
+}
+
+line *alloc_line() {
+  return calloc(sizeof line, 1);
+}
+
 /* precondition: out should be char[513] */
 bool get_line(char *out) {
   return fgets(out, 513, stdin) != NULL;
@@ -47,7 +65,6 @@ void rstrip(char *out) {
   char *scan = out;
   char *last = out;
   while (*scan != '\0') {
-
     if (*scan != ' ' && *scan != '\n') {
       last = scan;
     }
