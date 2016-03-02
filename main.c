@@ -20,6 +20,20 @@ line *alloc_line() {
   return calloc(sizeof line, 1);
 }
 
+line *append_line(line *base, line *new) {
+  if (base == NULL) {
+    return new;
+  } else {
+    if (base->next != NULL) {
+      base->next->prev = new;
+      new->next = base->next;
+    }
+    base->next = new;
+    new->prev = base;
+    return base;
+  }
+}
+
 /* precondition: out should be char[513] */
 bool get_line(char *out) {
   return fgets(out, 513, stdin) != NULL;
