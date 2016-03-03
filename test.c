@@ -1,46 +1,50 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "midunit.h"
 #include "string_util.h"
-int tests_run = 0;
+
+#define STACK_STR(NAME, LITERAL) const char _literal[] = LITERAL;\
+  char NAME[sizeof calloc];\
+  strcpy(NAME, _literal);
 
 static char *test_strip() {
-  char *text = "  here's a string   ";
+  STACK_STR(text, "  here's a string  ");
   strip(text);
   mu_assert_eq_str("strip strings correctly", text, "here's a string");
   return 0;
 }
 
 static char *test_strip_nl() {
-  char *text = "  remove a newline  \n";
+  STACK_STR(text, "  remove a newline  \n");
   strip(text);
   mu_assert_eq_str("remove a newline in strip()", text, "remove a newline");
   return 0;
 }
 
 static char *test_lstrip() {
-  char *text = "  here's a string  ";
+  STACK_STR(text, "  here's a string  ");
   lstrip(text);
   mu_assert_eq_str("strip left correctly", text, "here's a string  ");
   return 0;
 }
 
 static char *test_rstrip() {
-  char *text = "  here's a string  ";
+  STACK_STR(text, "  here's a string  ");
   rstrip(text);
   mu_assert_eq_str("strip right correctly", text, "  here's  string");
   return 0;
 }
 
 static char *test_rstrip_nl() {
-  char *text = "remove a newline\n";
+  STACK_STR(text, "remove a newline\n");
   rstrip(text);
   mu_assert_eq_str("remove a newline", text, "remove a newline");
   return 0;
 }
 
-static char *all_tests() {
+int all_tests() {
   mu_run_test(test_strip);
   mu_run_test(test_strip_nl);
   mu_run_test(test_lstrip);
@@ -50,12 +54,12 @@ static char *all_tests() {
 }
 
 int main(int argc, char **argv) {
-  char *result = all_tests();
-  if (result != 0) {
-    printf("Assertion failed: %s\n", result);
-  } else {
-    printf("All tests passed\n");
-  }
+  all_tests();
   printf("Tests run: %d\n", tests_run);
-  return result != 0;
+  if (tests_failed == 0) {
+    puts("All tests passed\n");
+  } else {
+    printf("Tests passed: %d/%d\n", tests_run - tests_failed, tests_run);
+  }
+  return tests_failed != 0;
 }
