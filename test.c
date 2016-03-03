@@ -33,7 +33,7 @@ static char *test_lstrip() {
 static char *test_rstrip() {
   STACK_STR(text, "  here's a string  ");
   rstrip(text);
-  mu_assert_eq_str("strip right correctly", text, "  here's  string");
+  mu_assert_eq_str("strip right correctly", text, "  here's a string");
   return 0;
 }
 

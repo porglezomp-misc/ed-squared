@@ -33,12 +33,10 @@ void strip(char *out) {
 
 void lstrip(char *out) {
   char *scan = out;
-  while (*scan == ' ') {
-    scan++;
-  }
-  int distance = scan - out;
-  int count = 513 - distance;
-  memmove(out, scan, count);
+  while (*scan == ' ') scan++;
+  char *first = scan;
+  while (*scan != '\0') scan++;
+  memmove(out, first, scan - first + 1);
 }
 
 void rstrip(char *out) {
