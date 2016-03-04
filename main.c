@@ -4,38 +4,7 @@
 #include <stdlib.h>
 
 #include "string_util.h"
-
-typedef struct line {
-  struct line *prev, *next;
-  char text[513];
-} line;
-
-typedef struct document {
-  line *first_line, *last_line, *current_line;
-  int line_number, line_count;
-} document;
-
-document *alloc_document() {
-  return calloc(sizeof(document), 1);
-}
-
-line *alloc_line() {
-  return calloc(sizeof(line), 1);
-}
-
-line *append_line(line *base, line *new) {
-  if (base == NULL) {
-    return new;
-  } else {
-    if (base->next != NULL) {
-      base->next->prev = new;
-      new->next = base->next;
-    }
-    base->next = new;
-    new->prev = base;
-    return base;
-  }
-}
+#include "buffer.h"
 
 /* precondition: out should be char[513] */
 bool get_line(char *out) {
