@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "string_util.h"
+#include "buffer.h"
 
 /* precondition: out should be char[513] */
 bool get_line(char *out) {
