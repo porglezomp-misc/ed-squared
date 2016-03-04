@@ -17,6 +17,8 @@ buffer *alloc_buffer();
 void free_buffer(buffer *buf);
 line *alloc_line();
 void free_line(line *l);
+
 line *line_append_line(line *base, line *new);
+void buffer_append_line(buffer *buf, line *new);
 
 #endif

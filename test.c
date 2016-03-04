@@ -59,6 +59,24 @@ static char *test_line_append() {
   return 0;
 }
 
+static char *test_buffer_append() {
+  line *l = alloc_line();
+  buffer *buf = alloc_buffer();
+  buffer_append_line(buf, l);
+  mu_assert("new line should be first line", buf->first_line == l);
+  mu_assert("new line should be current line", buf->current_line == l);
+  mu_assert("new line should be last line", buf->last_line == l);
+  line *l2 = alloc_line();
+  buffer_append_line(buf, l2);
+  mu_assert("first line should still be first", buf->first_line == l);
+  mu_assert("second line should be current line", buf->current_line == l2);
+  mu_assert("second line should be last line", buf->last_line == l2);
+  free_line(l);
+  free_line(l2);
+  free_buffer(buf);
+  return 0;
+}
+
 int all_tests() {
   mu_run_test(test_strip);
   mu_run_test(test_strip_nl);
@@ -66,6 +84,7 @@ int all_tests() {
   mu_run_test(test_rstrip);
   mu_run_test(test_rstrip_nl);
   mu_run_test(test_line_append);
+  mu_run_test(test_buffer_append);
   return 0;
 }
 

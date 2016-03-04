@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "string_util.h"
 
@@ -46,6 +47,18 @@ line *line_append_line(line *base, line *new) {
     new->prev = base;
     return new;
   }
+}
+
+void buffer_append_line(buffer *buf, line *new) {
+  if (buf->first_line == NULL) {
+    assert(buf->last_line == NULL);
+    buf->first_line = buf->last_line = new;
+  }
+  line_append_line(buf->current_line, new);
+  if (buf->current_line == buf->last_line) {
+    buf->last_line = new;
+  }
+  buf->current_line = new;
 }
 
 #endif
