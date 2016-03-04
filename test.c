@@ -4,6 +4,7 @@
 
 #include "midunit.h"
 #include "string_util.h"
+#include "buffer.h"
 
 #define STACK_STR(NAME, LITERAL) const char _literal[] = LITERAL;\
   char NAME[sizeof calloc];\
@@ -44,12 +45,27 @@ static char *test_rstrip_nl() {
   return 0;
 }
 
+static char *test_line_append() {
+  line *l1 = alloc_line();
+  line *l2 = alloc_line();
+  mu_assert("next line starts out null", l1->next == NULL);
+  mu_assert("previous line starts out null", l2->prev == NULL);
+  line *l = line_append_line(l1, l2);
+  mu_assert("the new last line should be returned", l2 == l);
+  mu_assert("the second line should be next after the first", l1->next == l2);
+  mu_assert("the first line should be prev to the second", l2->prev == l1);
+  free_line(l1);
+  free_line(l2);
+  return 0;
+}
+
 int all_tests() {
   mu_run_test(test_strip);
   mu_run_test(test_strip_nl);
   mu_run_test(test_lstrip);
   mu_run_test(test_rstrip);
   mu_run_test(test_rstrip_nl);
+  mu_run_test(test_line_append);
   return 0;
 }
 

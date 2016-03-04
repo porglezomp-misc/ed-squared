@@ -34,7 +34,7 @@ void free_line(line *l) {
   free(l);
 }
 
-line *append_line(line *base, line *new) {
+line *line_append_line(line *base, line *new) {
   if (base == NULL) {
     return new;
   } else {
@@ -44,7 +44,7 @@ line *append_line(line *base, line *new) {
     }
     base->next = new;
     new->prev = base;
-    return base;
+    return new;
   }
 }
 
