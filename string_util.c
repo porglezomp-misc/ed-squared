@@ -15,11 +15,9 @@ void strip_newline(char *out) {
 
 void strip(char *out) {
   char *scan = out;
-  while (*scan == ' ' && *scan != '\0' && *scan != '\n') {
-    scan++;
-  }
+  while (*scan == ' ' || *scan == '\t' || *scan == '\n') scan++;
   char *first = scan;
-  char *last = scan;
+  char *last = scan - 1;
   while (*scan != '\0') {
     if (*scan != ' ' && *scan != '\n') {
       last = scan;
@@ -33,7 +31,7 @@ void strip(char *out) {
 
 void lstrip(char *out) {
   char *scan = out;
-  while (*scan == ' ') scan++;
+  while (*scan == ' ' || *scan == '\t' || *scan == '\n') scan++;
   char *first = scan;
   while (*scan != '\0') scan++;
   memmove(out, first, scan - first + 1);
@@ -41,7 +39,7 @@ void lstrip(char *out) {
 
 void rstrip(char *out) {
   char *scan = out;
-  char *last = out;
+  char *last = out - 1;
   while (*scan != '\0') {
     if (*scan != ' ' && *scan != '\n') {
       last = scan;

@@ -23,10 +23,38 @@ static char *test_strip_nl() {
   return 0;
 }
 
+static char *test_strip_empty() {
+  STACK_STR(text, "");
+  strip(text);
+  mu_assert_eq_str("strip empty string should be empty", text, "");
+  return 0;
+}
+
+static char *test_strip_only_nl() {
+  STACK_STR(text, "\n");
+  strip(text);
+  mu_assert_eq_str("strip newline should be empty", text, "");
+  return 0;
+}
+
 static char *test_lstrip() {
   STACK_STR(text, "  here's a string  ");
   lstrip(text);
   mu_assert_eq_str("strip left correctly", text, "here's a string  ");
+  return 0;
+}
+
+static char *test_lstrip_empty() {
+  STACK_STR(text, "");
+  lstrip(text);
+  mu_assert_eq_str("lstrip empty string should be empty", text, "");
+  return 0;
+}
+
+static char *test_lstrip_only_nl() {
+  STACK_STR(text, "\n");
+  lstrip(text);
+  mu_assert_eq_str("lstrip newline should be empty", text, "");
   return 0;
 }
 
@@ -44,12 +72,32 @@ static char *test_rstrip_nl() {
   return 0;
 }
 
+static char *test_rstrip_empty() {
+  STACK_STR(text, "");
+  strip(text);
+  mu_assert_eq_str("rstrip empty string should be empty", text, "");
+  return 0;
+}
+
+static char *test_rstrip_only_nl() {
+  STACK_STR(text, "\n");
+  rstrip(text);
+  mu_assert_eq_str("rstrip newline should be empty", text, "");
+  return 0;
+}
+
 int all_tests() {
   mu_run_test(test_strip);
   mu_run_test(test_strip_nl);
+  mu_run_test(test_strip_empty);
+  mu_run_test(test_strip_only_nl);
   mu_run_test(test_lstrip);
+  mu_run_test(test_lstrip_empty);
+  mu_run_test(test_lstrip_only_nl);
   mu_run_test(test_rstrip);
   mu_run_test(test_rstrip_nl);
+  mu_run_test(test_rstrip_empty);
+  mu_run_test(test_rstrip_only_nl);
   return 0;
 }
 
