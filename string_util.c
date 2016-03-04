@@ -19,7 +19,7 @@ void strip(char *out) {
   char *first = scan;
   char *last = scan - 1;
   while (*scan != '\0') {
-    if (*scan != ' ' && *scan != '\n') {
+    if (*scan != ' ' && *scan != '\t' && *scan != '\n') {
       last = scan;
     }
     scan++;
@@ -41,7 +41,7 @@ void rstrip(char *out) {
   char *scan = out;
   char *last = out - 1;
   while (*scan != '\0') {
-    if (*scan != ' ' && *scan != '\n') {
+    if (*scan != ' ' && *scan != '\t' && *scan != '\n') {
       last = scan;
     }
     scan++;

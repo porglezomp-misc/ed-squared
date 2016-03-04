@@ -37,6 +37,13 @@ static char *test_strip_only_nl() {
   return 0;
 }
 
+static char *test_strip_tabs() {
+  STACK_STR(text, "	indent	\n");
+  strip(text);
+  mu_assert_eq_str("strip tabs", text, "indent");
+  return 0;
+}
+
 static char *test_lstrip() {
   STACK_STR(text, "  here's a string  ");
   lstrip(text);
@@ -55,6 +62,13 @@ static char *test_lstrip_only_nl() {
   STACK_STR(text, "\n");
   lstrip(text);
   mu_assert_eq_str("lstrip newline should be empty", text, "");
+  return 0;
+}
+
+static char *test_lstrip_tabs() {
+  STACK_STR(text, "	indent	\n");
+  lstrip(text);
+  mu_assert_eq_str("lstrip tabs", text, "indent	\n");
   return 0;
 }
 
@@ -86,18 +100,28 @@ static char *test_rstrip_only_nl() {
   return 0;
 }
 
+static char *test_rstrip_tabs() {
+  STACK_STR(text, "	indent	\n");
+  rstrip(text);
+  mu_assert_eq_str("rstrip tabs", text, "	indent");
+  return 0;
+}
+
 int all_tests() {
   mu_run_test(test_strip);
   mu_run_test(test_strip_nl);
   mu_run_test(test_strip_empty);
   mu_run_test(test_strip_only_nl);
+  mu_run_test(test_strip_tabs);
   mu_run_test(test_lstrip);
   mu_run_test(test_lstrip_empty);
   mu_run_test(test_lstrip_only_nl);
+  mu_run_test(test_lstrip_tabs);
   mu_run_test(test_rstrip);
   mu_run_test(test_rstrip_nl);
   mu_run_test(test_rstrip_empty);
   mu_run_test(test_rstrip_only_nl);
+  mu_run_test(test_rstrip_tabs);
   return 0;
 }
 
