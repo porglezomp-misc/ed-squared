@@ -22,13 +22,25 @@ bool get_command(char *out) {
 
 int main(int argc, char **argv) {
   char line_buffer[513];  /* 512 characters and '\0' */
+  buffer *buf = alloc_buffer();
   while (true) {
     if (get_command(line_buffer)) {
-      if (line_buffer[0] == 'q' && line_buffer[1] == '\0') {
+      if (line_buffer[0] == 'a' && line_buffer[1] == '\0') {
+      while (true) {
+        line *new_line = alloc_line();
+        get_line(new_line->text);
+        if (new_line->text[0] == '.' && new_line->text[1] == '\n' && new_line->text[2] == '\0') {
+          free_line(new_line);
+          break;
+        }
+        buffer_append_line(buf, new_line);
+      }
+      } else if (line_buffer[0] == 'q' && line_buffer[1] == '\0') {
         break;
+      } else {
+        puts("?");
       }
     }
-    puts("?");
   }
   return 0;
 }
