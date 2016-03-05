@@ -46,6 +46,16 @@ buffer *read_buffer(buffer *buf, const char *name) {
 }
 
 char filename[256];
+void replace_buffer(buffer **buf, const char *name) {
+  buffer *newbuf = read_buffer(NULL, filename);
+  if (newbuf) {
+    free_buffer(*buf);
+    *buf = newbuf;
+  } else {
+    puts("?");
+  }
+}
+
 int main(int argc, char **argv) {
   char line_buffer[513];  /* 512 characters and '\0' */
   buffer *buf = alloc_buffer();
@@ -74,6 +84,11 @@ int main(int argc, char **argv) {
       } else if (line_buffer[0] == 'r' && line_buffer[1] == ' ' && line_buffer[2] != '\0') {
         strncpy(filename, line_buffer+2, 255);
         if (!read_buffer(buf, filename)) puts("?");
+      } else if (line_buffer[0] == 'e' && line_buffer[1] == '\0') {
+        replace_buffer(&buf, filename);
+      } else if (line_buffer[0] == 'e' && line_buffer[1] == ' ' && line_buffer[2] != '\0') {
+        strncpy(filename, line_buffer+2, 255);
+        replace_buffer(&buf, filename);
       } else {
         puts("?");
       }
