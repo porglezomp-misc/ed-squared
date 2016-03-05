@@ -73,3 +73,31 @@ bool buffer_retreat_line(buffer *buf) {
   }
   return false;
 }
+
+line *buffer_goto_line(buffer *buf, int n) {
+  if (n <= 0) return NULL;
+  line *l = buf->first_line;
+  while (--n > 0) {
+    if (l == NULL) return NULL;
+    l = l->next;
+  }
+  if (l != NULL) buf->current_line = l;
+  return l;
+}
+
+line *buffer_goto_line_relative(buffer *buf, int n) {
+  line *l = buf->current_line;
+  while (n < 0) {
+    if (l == NULL) return NULL;
+    l = l->prev;
+    n++;
+  }
+  while (n > 0) {
+    if (l == NULL) return NULL;
+    l = l->next;
+    n--;
+  }
+  if (l != NULL) buf->current_line = l;
+  return l;
+}
+

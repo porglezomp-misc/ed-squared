@@ -179,6 +179,39 @@ static char *test_buffer_retreat() {
   return 0;
 }
 
+static char *test_buffer_line() {
+  buffer *buf = alloc_buffer();
+  mu_assert("going to 0th should be null", buffer_goto_line(buf, 0) == NULL);
+  mu_assert("going to nth should be null on empty", buffer_goto_line(buf, 3) == NULL);
+  line *l1 = alloc_line();
+  line *l2 = alloc_line();
+  buffer_append_line(buf, l1);
+  mu_assert("going to first on single line should be it", buffer_goto_line(buf, 1) == l1);
+  mu_assert("going to zeroth should always be null", buffer_goto_line(buf, 0) == NULL);
+  buffer_append_line(buf, l2);
+  mu_assert("going to second should be line", buffer_goto_line(buf, 2) == l2);
+  mu_assert("going to off the end should null", buffer_goto_line(buf, 4) == NULL);
+  return 0;
+}
+
+static char *test_buffer_line_relative() {
+  buffer *buf = alloc_buffer();
+  line *l1 = alloc_line();
+  line *l2 = alloc_line();
+  buffer_append_line(buf, l1);
+  buffer_append_line(buf, l2);
+  mu_assert("minus should be the first line", buffer_goto_line_relative(buf, -1) == l1);
+  mu_assert("plus should then be the second line", buffer_goto_line_relative(buf, 1) == l2);
+  mu_assert("plus should then be null", buffer_goto_line_relative(buf, 1) == NULL);
+  mu_assert("the current should still be the second", buf->current_line == l2);
+  mu_assert("-2 should then be null", buffer_goto_line_relative(buf, -2) == NULL);
+  mu_assert("the current should still be the second line", buf->current_line == l2);
+  free_line(l1);
+  free_line(l2);
+  free_buffer(buf);
+  return 0;
+}
+
 int all_tests() {
   mu_run_test(test_strip);
   mu_run_test(test_strip_nl);
@@ -198,6 +231,8 @@ int all_tests() {
   mu_run_test(test_buffer_append);
   mu_run_test(test_buffer_advance);
   mu_run_test(test_buffer_retreat);
+  mu_run_test(test_buffer_line);
+  mu_run_test(test_buffer_line_relative);
   return 0;
 }
 
