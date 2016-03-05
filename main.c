@@ -31,6 +31,20 @@ void write_buffer(const buffer *buf, const char *name) {
   fclose(f);
 }
 
+buffer *read_buffer(buffer *buf, const char *name) {
+  FILE *f = fopen(name, "r");
+  if (!f) return NULL;
+  if (!buf) buf = alloc_buffer();
+  while (!feof(f)) {
+    line *l = alloc_line();
+    fgets(l->text, 513, f);
+    buffer_append_line(buf, l);
+  }
+  printf("%ld\n", ftell(f));
+  fclose(f);
+  return buf;
+}
+
 char filename[256];
 int main(int argc, char **argv) {
   char line_buffer[513];  /* 512 characters and '\0' */
@@ -55,6 +69,11 @@ int main(int argc, char **argv) {
       } else if (line_buffer[0] == 'w' && line_buffer[1] == ' ' && line_buffer[2] != '\0') {
         strncpy(filename, line_buffer+2, 255);
         write_buffer(buf, filename);
+      } else if (line_buffer[0] == 'r' && line_buffer[1] == '\0') {
+        if (!read_buffer(buf, filename)) puts("?");
+      } else if (line_buffer[0] == 'r' && line_buffer[1] == ' ' && line_buffer[2] != '\0') {
+        strncpy(filename, line_buffer+2, 255);
+        if (!read_buffer(buf, filename)) puts("?");
       } else {
         puts("?");
       }
