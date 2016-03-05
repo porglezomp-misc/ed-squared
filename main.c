@@ -20,6 +20,17 @@ bool get_command(char *out) {
   return true;
 }
 
+void write_buffer(const buffer *buf, const char *name) {
+  FILE *f = fopen(name, "w");
+  line *l = buf->first_line;
+  while (l) {
+    fprintf(f, "%s", l->text);
+    l = l->next;
+  }
+  printf("%ld\n", ftell(f));
+  fclose(f);
+}
+
 int main(int argc, char **argv) {
   char line_buffer[513];  /* 512 characters and '\0' */
   buffer *buf = alloc_buffer();
@@ -37,6 +48,8 @@ int main(int argc, char **argv) {
       }
       } else if (line_buffer[0] == 'q' && line_buffer[1] == '\0') {
         break;
+      } else if (line_buffer[0] == 'w' && line_buffer[1] == '\0') {
+        write_buffer(buf, "edsq-out");
       } else {
         puts("?");
       }
