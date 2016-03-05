@@ -1,6 +1,3 @@
-#ifndef _BUFFER_H
-#define _BUFFER_H
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -61,4 +58,18 @@ void buffer_append_line(buffer *buf, line *new) {
   buf->current_line = new;
 }
 
-#endif
+bool buffer_advance_line(buffer *buf) {
+  if (buf->current_line && buf->current_line->next) {
+    buf->current_line = buf->current_line->next;
+    return true;
+  }
+  return false;
+}
+
+bool buffer_retreat_line(buffer *buf) {
+  if (buf->current_line && buf->current_line->prev) {
+    buf->current_line = buf->current_line->prev;
+    return true;
+  }
+  return false;
+}

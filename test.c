@@ -140,6 +140,45 @@ static char *test_buffer_append() {
   return 0;
 }
 
+static char *test_buffer_advance() {
+  buffer *buf = alloc_buffer();
+  line *l1 = alloc_line();
+  line *l2 = alloc_line();
+  buffer_append_line(buf, l1);
+  buffer_append_line(buf, l2);
+  buf->current_line = buf->first_line;
+  mu_assert("current line should be the first line", buf->current_line == l1);
+  bool value = buffer_advance_line(buf);
+  mu_assert("current line should now be forward", buf->current_line == l2);
+  mu_assert("buffer advancing should return true", value == true);
+  value = buffer_advance_line(buf);
+  mu_assert("buffer should not advance past the last line", buf->current_line == l2);
+  mu_assert("buffer pausing should return false", value == false);
+  free_line(l1);
+  free_line(l2);
+  free_buffer(buf);
+  return 0;
+}
+
+static char *test_buffer_retreat() {
+  buffer *buf = alloc_buffer();
+  line *l1 = alloc_line();
+  line *l2 = alloc_line();
+  buffer_append_line(buf, l1);
+  buffer_append_line(buf, l2);
+  mu_assert("current line should be the last line", buf->current_line == l2);
+  bool value = buffer_retreat_line(buf);
+  mu_assert("current line should be the first line", buf->current_line == l1);
+  mu_assert("retreat should return true when lines move", value == true);
+  value = buffer_retreat_line(buf);
+  mu_assert("should not retreat past the beginning of the buffer", buf->current_line == l1);
+  mu_assert("retreat should return false when nothing changes", value == false);
+  free_line(l1);
+  free_line(l2);
+  free_buffer(buf);
+  return 0;
+}
+
 int all_tests() {
   mu_run_test(test_strip);
   mu_run_test(test_strip_nl);
@@ -157,6 +196,8 @@ int all_tests() {
   mu_run_test(test_rstrip_tabs);
   mu_run_test(test_line_append);
   mu_run_test(test_buffer_append);
+  mu_run_test(test_buffer_advance);
+  mu_run_test(test_buffer_retreat);
   return 0;
 }
 
