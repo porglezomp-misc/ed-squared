@@ -20,6 +20,42 @@ bool get_command(char *out) {
   return true;
 }
 
+void write_buffer(const buffer *buf, const char *name) {
+  FILE *f = fopen(name, "w");
+  line *l = buf->first_line;
+  while (l) {
+    fprintf(f, "%s", l->text);
+    l = l->next;
+  }
+  printf("%ld\n", ftell(f));
+  fclose(f);
+}
+
+buffer *read_buffer(buffer *buf, const char *name) {
+  FILE *f = fopen(name, "r");
+  if (!f) return NULL;
+  if (!buf) buf = alloc_buffer();
+  while (!feof(f)) {
+    line *l = alloc_line();
+    fgets(l->text, 513, f);
+    buffer_append_line(buf, l);
+  }
+  printf("%ld\n", ftell(f));
+  fclose(f);
+  return buf;
+}
+
+char filename[256];
+void replace_buffer(buffer **buf, const char *name) {
+  buffer *newbuf = read_buffer(NULL, filename);
+  if (newbuf) {
+    free_buffer(*buf);
+    *buf = newbuf;
+  } else {
+    puts("?");
+  }
+}
+
 int main(int argc, char **argv) {
   char line_buffer[513];  /* 512 characters and '\0' */
   buffer *buf = alloc_buffer();
@@ -37,6 +73,22 @@ int main(int argc, char **argv) {
       }
       } else if (line_buffer[0] == 'q' && line_buffer[1] == '\0') {
         break;
+      } else if (line_buffer[0] == 'w' && line_buffer[1] == '\0') {
+        if (filename[0] != '\0') write_buffer(buf, filename);
+        else puts("?");
+      } else if (line_buffer[0] == 'w' && line_buffer[1] == ' ' && line_buffer[2] != '\0') {
+        strncpy(filename, line_buffer+2, 255);
+        write_buffer(buf, filename);
+      } else if (line_buffer[0] == 'r' && line_buffer[1] == '\0') {
+        if (!read_buffer(buf, filename)) puts("?");
+      } else if (line_buffer[0] == 'r' && line_buffer[1] == ' ' && line_buffer[2] != '\0') {
+        strncpy(filename, line_buffer+2, 255);
+        if (!read_buffer(buf, filename)) puts("?");
+      } else if (line_buffer[0] == 'e' && line_buffer[1] == '\0') {
+        replace_buffer(&buf, filename);
+      } else if (line_buffer[0] == 'e' && line_buffer[1] == ' ' && line_buffer[2] != '\0') {
+        strncpy(filename, line_buffer+2, 255);
+        replace_buffer(&buf, filename);
       } else {
         puts("?");
       }
