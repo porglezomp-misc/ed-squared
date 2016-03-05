@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "string_util.h"
 #include "buffer.h"
@@ -48,6 +49,14 @@ int main(int argc, char **argv) {
         break;
       } else if (line_buffer[0] == 'p' && line_buffer[1] == '\0') {
         print_line(buf);
+      } else if (line_buffer[0] == '-' && line_buffer[1] == '\0') {
+        if (!buffer_retreat_line(buf)) puts("?");
+      } else if (line_buffer[0] == '+' && line_buffer[1] == '\0') {
+        if (!buffer_advance_line(buf)) puts("?");
+      } else if (isdigit(line_buffer[0])) {
+        int lineno;
+        sscanf(line_buffer, "%d", &lineno);
+        if (!buffer_goto_line(buf, lineno)) puts("?");
       } else {
         puts("?");
       }
