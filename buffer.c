@@ -101,3 +101,13 @@ line *buffer_goto_line_relative(buffer *buf, int n) {
   return l;
 }
 
+
+int buffer_get_line_number(buffer *buf) {
+  line *scan = buf->first_line;
+  int lineno = 1;
+  while (scan != buf->current_line) {
+    scan = scan->next;
+    lineno++;
+  }
+  return lineno;
+}

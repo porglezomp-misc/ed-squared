@@ -212,6 +212,21 @@ static char *test_buffer_line_relative() {
   return 0;
 }
 
+static char *test_buffer_get_line_number() {
+  buffer *buf = alloc_buffer();
+  line *l1 = alloc_line();
+  line *l2 = alloc_line();
+  buffer_append_line(buf, l1);
+  buffer_append_line(buf, l2);
+  mu_assert("current line number should be 2", buffer_get_line_number(buf) == 2);
+  buffer_retreat_line(buf);
+  mu_assert("current line number should be 1", buffer_get_line_number(buf) == 1);
+  free_line(l1);
+  free_line(l2);
+  free_buffer(buf);
+  return 0;
+}
+
 int all_tests() {
   mu_run_test(test_strip);
   mu_run_test(test_strip_nl);
@@ -233,6 +248,7 @@ int all_tests() {
   mu_run_test(test_buffer_retreat);
   mu_run_test(test_buffer_line);
   mu_run_test(test_buffer_line_relative);
+  mu_run_test(test_buffer_get_line_number);
   return 0;
 }
 
