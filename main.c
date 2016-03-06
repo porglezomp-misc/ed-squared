@@ -38,6 +38,35 @@ void print_line(buffer *buf) {
   else puts("?");
 }
 
+line *navigate(buffer *buf, const char *command) {
+  int start_line = -1;
+  if (isdigit(*command)) {
+    int count;
+    sscanf(command, "%d%n", &start_line, &count);
+    command += count;
+    buffer_goto_line(buf, start_line);
+  }
+  int motion = 0;
+  while (*command == '-' || *command == '+' || *command == ' ') {
+    char c = *command;
+    command++;
+    if (isdigit(*command)) {
+      int offset, n_consumed;
+      sscanf(command, "%d%n", &offset, &n_consumed);
+      if (c == '+' || c == ' ') motion += offset;
+      else if (c == '-') motion -= offset;
+      command += n_consumed;
+    } else {
+      if (c == '+') motion++;
+      else if (c == '-') motion--;
+    }
+  }
+  line *new_line;
+  if (start_line == -1) new_line = buffer_goto_line_relative(buf, motion);
+  else new_line = buffer_goto_line(buf, start_line + motion);
+  return new_line;
+}
+
 int main(int argc, char **argv) {
   char line_buffer[513];  /* 512 characters and '\0' */
   buffer *buf = alloc_buffer();
@@ -49,16 +78,8 @@ int main(int argc, char **argv) {
         break;
       } else if (line_buffer[0] == 'p' && line_buffer[1] == '\0') {
         print_line(buf);
-      } else if (line_buffer[0] == '-' && line_buffer[1] == '\0') {
-        if (!buffer_retreat_line(buf)) puts("?");
-        else print_line(buf);
-      } else if ((line_buffer[0] == '+' && line_buffer[1] == '\0') || line_buffer[0] == '\0') {
-        if (!buffer_advance_line(buf)) puts("?");
-        else print_line(buf);
-      } else if (isdigit(line_buffer[0])) {
-        int lineno;
-        sscanf(line_buffer, "%d", &lineno);
-        if (!buffer_goto_line(buf, lineno)) puts("?");
+      } else if (line_buffer[0] == '-' || line_buffer[0] == '+' || isdigit(line_buffer[0])) {
+        if (!navigate(buf, line_buffer)) puts("?");
         else print_line(buf);
       } else {
         puts("?");
