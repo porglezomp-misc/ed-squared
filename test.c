@@ -7,7 +7,7 @@
 #include "buffer.h"
 
 #define STACK_STR(NAME, LITERAL) const char _literal[] = LITERAL;\
-  char NAME[sizeof calloc];\
+  char NAME[sizeof _literal];\
   strcpy(NAME, _literal);
 
 static char *test_strip() {
