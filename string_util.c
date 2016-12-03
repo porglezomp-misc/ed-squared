@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-/* precondition: out should be char[513] */
 void strip_newline(char *out) {
   do {
     if (*out == '\n') {
@@ -14,19 +13,9 @@ void strip_newline(char *out) {
 }
 
 void strip(char *out) {
-  char *scan = out;
-  while (*scan == ' ' || *scan == '\t' || *scan == '\n') scan++;
-  char *first = scan;
-  char *last = scan - 1;
-  while (*scan != '\0') {
-    if (*scan != ' ' && *scan != '\t' && *scan != '\n') {
-      last = scan;
-    }
-    scan++;
-  }
-  int count = last - first + 1;
-  memmove(out, first, count);
-  out[count] = '\0';
+  // We rstrip first so that lstrip doesn't have to memmove as much
+  rstrip(out);
+  lstrip(out);
 }
 
 void lstrip(char *out) {
