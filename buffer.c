@@ -1,3 +1,5 @@
+#include "buffer.h"
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -5,16 +7,6 @@
 #include <assert.h>
 
 #include "string_util.h"
-
-typedef struct line {
-  struct line *prev, *next;
-  char text[513];
-} line;
-
-typedef struct buffer {
-  line *first_line, *last_line, *current_line;
-  int line_number, line_count;
-} buffer;
 
 buffer *alloc_buffer() {
   return calloc(sizeof(buffer), 1);
